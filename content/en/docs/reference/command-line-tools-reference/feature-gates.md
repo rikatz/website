@@ -141,8 +141,22 @@ different Kubernetes components.
 | `MemoryManager` | `false` | Alpha | 1.21 | 1.21 |
 | `MemoryManager` | `true` | Beta | 1.22 | |
 | `MixedProtocolLBService` | `false` | Alpha | 1.20 | |
+<<<<<<< HEAD
 | `NetworkPolicyEndPort` | `false` | Alpha | 1.21 | 1.21 |
 | `NetworkPolicyEndPort` | `true` | Beta | 1.22 |  |
+||||||| parent of 950c70f02 (Move netpol new features to reflect v1.22 evolution)
+| `NamespaceDefaultLabelName` | `true` | Beta | 1.21 | |
+| `NetworkPolicyEndPort` | `false` | Alpha | 1.21 |  |
+| `NodeDisruptionExclusion` | `false` | Alpha | 1.16 | 1.18 |
+| `NodeDisruptionExclusion` | `true` | Beta | 1.19 | 1.20 |
+=======
+| `NamespaceDefaultLabelName` | `true` | Beta | 1.21 | |
+| `NamespaceDefaultLabelName` | `true` | GA | 1.22 | |
+| `NetworkPolicyEndPort` | `false` | Alpha | 1.21 |  |
+| `NetworkPolicyEndPort` | `true` | Beta | 1.22 |  |
+| `NodeDisruptionExclusion` | `false` | Alpha | 1.16 | 1.18 |
+| `NodeDisruptionExclusion` | `true` | Beta | 1.19 | 1.20 |
+>>>>>>> 950c70f02 (Move netpol new features to reflect v1.22 evolution)
 | `NonPreemptingPriority` | `false` | Alpha | 1.15 | 1.18 |
 | `NonPreemptingPriority` | `true` | Beta | 1.19 | |
 | `PodDeletionCost` | `false` | Alpha | 1.21 | 1.21 |
