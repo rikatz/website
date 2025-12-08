@@ -14,65 +14,31 @@ Selecting a Gateway API implementation can be challenging. With many options ava
 
 This guide covers characteristics that organizations commonly consider when selecting a Gateway API implementation.
 
-## Should You Migrate from Ingress to Gateway API?
+## Why Use Gateway API?
 
-Before selecting a Gateway API implementation, it's important to understand the relationship between Ingress and Gateway API. Gateway API is the successor to Ingress, designed to address many of the limitations that emerged as Kubernetes use cases evolved. While both can manage ingress traffic, they take different approaches.
+Gateway API is the successor to Ingress, offering a more expressive, flexible, and portable approach to routing traffic in Kubernetes. Released as GA in October 2023, Gateway API addresses key limitations of Ingress while maintaining Kubernetes principles of declarative configuration and extensibility.
 
-### Why Gateway API Was Created
+### Key Benefits
 
-Ingress has served the Kubernetes community well, but certain limitations became apparent over time:
+* **Standardized portability**: Conformance testing and core features work consistently across implementations, reducing vendor lock-in. Advanced features like header manipulation, request mirroring, and traffic splitting are part of the API specification rather than vendor-specific annotations.
 
-* **Limited expressiveness**: Many advanced routing requirements (header-based routing, traffic splitting, cross-namespace references) could only be achieved through vendor-specific annotations, reducing portability.
+* **Better role separation**: Gateway API separates infrastructure concerns (Gateway) from application routing (Routes), allowing cluster operators and application teams to work independently with clear boundaries.
 
-* **Role-based separation**: Ingress combines infrastructure and routing concerns in a single resource, making it harder to delegate responsibilities in multi-tenant environments.
+* **Protocol flexibility**: Native support for HTTP, TCP, UDP, TLS, and gRPC with consistent patterns across protocols, rather than focusing solely on HTTP/HTTPS.
 
-* **Protocol support**: While Ingress focuses on HTTP/HTTPS, modern applications increasingly need standardized ways to manage TCP, UDP, gRPC, and other protocols.
+* **Active development**: Gateway API continues to evolve with new capabilities, while Ingress is in maintenance mode with limited new features.
 
-* **Standardization gaps**: The heavy reliance on annotations for advanced features meant that migrating between implementations often required significant reconfiguration.
+* **Production-ready ecosystem**: Many implementations are mature and battle-tested, with transparent conformance reports showing which features each implementation supports.
 
-Gateway API was developed to address these limitations while maintaining Kubernetes principles of declarative configuration and extensibility.
+### Migration from Ingress
 
-### When Ingress May Still Be Appropriate
+Most common Ingress patterns have direct equivalents in Gateway API, though the syntax differs. Key considerations when migrating:
 
-There are some scenarios where continuing with Ingress may be reasonable:
+* **Review vendor-specific annotations**: Many annotation-based configurations have standardized Gateway API equivalents, improving portability.
 
-* **Very simple, static configurations**: For applications with basic HTTP routing needs that will never require advanced traffic management, and where the simplicity of a single resource type is valued.
+* **Gradual transition**: Gateway API implementations can run alongside Ingress controllers, allowing incremental migration and testing.
 
-* **Short remaining lifecycle**: Applications that will be decommissioned in the near term may not justify the migration effort.
-
-* **Implementation gaps**: In rare cases where a specific Gateway API implementation doesn't yet support a feature that your Ingress controller provides (though this gap is narrowing as Gateway API implementations mature).
-
-* **Organizational transition period**: While preparing for Gateway API adoption, continuing with Ingress may be appropriate until the organization has completed its evaluation and migration planning.
-
-### Benefits of Adopting Gateway API
-
-For most use cases, Gateway API offers significant advantages:
-
-* **Better portability**: Conformance testing and standardized features reduce lock-in and make it easier to switch implementations when needed.
-
-* **Richer routing capabilities**: Header manipulation, request mirroring, traffic splitting, and other advanced features are part of the API specification rather than vendor-specific extensions.
-
-* **Improved multi-tenancy**: The separation between Gateway (infrastructure) and Routes (application routing) allows cluster operators and application teams to work independently with appropriate boundaries.
-
-* **Protocol flexibility**: Consistent patterns across HTTP, TCP, UDP, TLS, and gRPC reduce the learning curve and configuration complexity.
-
-* **Active development**: Gateway API continues to evolve with new features and improvements, while Ingress is in maintenance mode.
-
-* **Production-ready**: Gateway API v1.0 was released in October 2023, and many implementations are mature and battle-tested in production environments.
-
-### Migration Considerations
-
-When planning a migration from Ingress to Gateway API:
-
-1. **Inventory your current setup**: Document the features and configurations you currently use, paying particular attention to any vendor-specific annotations.
-
-2. **Evaluate Gateway API equivalents**: Most common Ingress patterns have direct equivalents in Gateway API, though the syntax differs. More complex annotation-based configurations may require researching the implementation's documentation.
-
-3. **Consider migration tooling**: The [ingress2gateway](https://github.com/kubernetes-sigs/ingress2gateway) project is an ongoing community effort to provide automated conversion of Ingress resources to Gateway API. While still a work in progress, it may help with the initial conversion and serve as a learning tool.
-
-4. **Plan for coexistence**: Many Gateway API implementations can run alongside Ingress controllers, allowing for gradual migration and testing before fully committing.
-
-5. **Test thoroughly**: As with any infrastructure change, comprehensive testing in non-production environments is essential before migrating production traffic.
+* **Migration tooling**: The [ingress2gateway](https://github.com/kubernetes-sigs/ingress2gateway) project provides automated conversion tools to help with initial migration.
 
 ## Getting Started with Gateway API
 
@@ -152,19 +118,9 @@ spec:
       port: 80
 ```
 
-### Key Differences
+This example illustrates how Gateway API separates infrastructure (Gateway) from routing (HTTPRoute), allowing different teams to manage their concerns independently. HTTPRoutes can also reference Gateways in different namespaces, enabling better multi-tenancy models.
 
-* **Separation of concerns**: Gateway API separates infrastructure (Gateway) from routing (HTTPRoute), allowing infrastructure teams to manage listeners and protocols while application teams manage routing rules independently.
-
-* **Cross-namespace references**: HTTPRoutes can reference Gateways in different namespaces (with appropriate RBAC permissions), enabling better multi-tenancy models where a shared Gateway serves multiple application namespaces.
-
-* **Typed resources**: Gateway API uses protocol-specific resource types (HTTPRoute, TCPRoute, TLSRoute, etc.) with fields tailored to each protocol, rather than a single multipurpose resource.
-
-* **Standardized configuration**: Advanced features like header modification, request mirroring, and traffic splitting are part of the API specification rather than implementation-specific annotations, improving portability between implementations.
-
-## I. Technical Considerations
-
-Technical characteristics include whether an implementation meets feature requirements, aligns with team expertise, and satisfies performance needs.
+## Technical Considerations
 
 ### Feature Set Conformance
 
