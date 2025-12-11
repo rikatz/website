@@ -55,7 +55,7 @@ metadata:
   name: example-ingress
   namespace: default
 spec:
-  ingressClassName: nginx  # References the Ingress controller
+  ingressClassName: some-class  # References the Ingress controller
   rules:
   - host: example.com
     http:
